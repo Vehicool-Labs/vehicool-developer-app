@@ -21,7 +21,7 @@ const Sidebar: FC<SidebarProperties> = ({ brand, children, className = '' }) => 
 				target={ brand.target || '_self' }
 			>{ brand.title }
 			</a>
-			<div className="self-start w-full">
+			<div className="self-start w-full flex-1 flex flex-col">
 				{ children }
 			</div>
 		</div>
