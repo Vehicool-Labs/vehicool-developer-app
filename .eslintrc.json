@@ -224,7 +224,7 @@
 				"html": "enforce",
 				"custom": "ignore",
 				"explicitSpread": "enforce",
-				"exceptions": ["input", "select"]
+				"exceptions": ["input", "select", "button"]
 			}
 		],
 		"react/require-default-props": "off",
