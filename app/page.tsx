@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -24,10 +23,10 @@ const HomePage = () => {
 	}, [ supabase ]);
 
 	return (
-		<main className="flex min-h-screen flex-col items-center p-24">
+		<div className="flex min-h-screen flex-col items-center p-24">
 			<h1 className="text-blue-500 font-bold text-4xl mb-4">Welcome on Vehicool for Developers.</h1>
 			<h2 className="font-semibold text-2xl">Use the Vehicool API to improve your app.</h2>
-		</main>
+		</div>
 	);
 };
 
