@@ -6,11 +6,11 @@ type InputProperties = {
 	label?: string;
 	labelClassName?: string;
 	inputClassName?: string;
-	register: ReturnType<RegisterFunction>;
+	register?: ReturnType<RegisterFunction>;
 	error?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-const Input: FC<InputProperties> = ({ label = '', labelClassName = '', inputClassName = '', register, error, ...rest }) => {
+const Input: FC<InputProperties> = ({ label = '', labelClassName = '', inputClassName = '', register = null, error, ...rest }) => {
 
 	return (
 		<label className={ `mb-4 flex flex-col gap-1 ${ labelClassName }` }>

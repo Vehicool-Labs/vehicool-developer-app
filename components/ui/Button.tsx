@@ -10,7 +10,7 @@ const Button: FC<ButtonProperties> & ButtonVariants = ({ className = '', ...rest
 
 	return (
 		<button
-			className={ `rounded-md px-4 py-2 cursor-pointer flex gap-2 justify-center ${ className }` }
+			className={ `rounded-md px-4 py-2 cursor-pointer flex gap-2 justify-center items-center ${ className }` }
 			type="submit"
 			{ ...rest }
 		/>

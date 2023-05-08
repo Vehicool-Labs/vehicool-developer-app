@@ -1,6 +1,6 @@
 'use client';
 
-import { faSave, faLockKeyhole } from '@fortawesome/pro-duotone-svg-icons';
+import { faSave, faAt } from '@fortawesome/pro-duotone-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { User } from '@supabase/supabase-js';
@@ -12,23 +12,21 @@ import { useSupabase } from '@/app/supabase-provider';
 import Input from '@/components/form/inputs/Input';
 import Button from '@/components/ui/Button';
 
-type AccountUpdatePasswordProperties = {
+type AccountUpdateEmailProperties = {
 	user: User;
 }
 
-type UpdatePasswordFormValues = {
+type AccountUpdateEmailFormValues = {
+	email: string;
 	password: string;
-	newPassword: string;
-	newPasswordConfirm: string;
 }
 
-const UpdatePasswordFormSchema = Yup.object({
+const AccountUpdateEmailFormSchema = Yup.object({
+	email: Yup.string().required('Required.').email('Please enter a valid email address.'),
 	password: Yup.string().required('Required.'),
-	newPassword: Yup.string().required('Required.').min(8, 'Should contain at least 8 characters.').notOneOf([ Yup.ref('password') ], 'Your new password must be different from the previous one.'),
-	newPasswordConfirm: Yup.string().required('Required').oneOf([ Yup.ref('newPassword') ], 'Passwords must match.'),
 }).required();
 
-const AccountUpdatePassword: FC<AccountUpdatePasswordProperties> = ({ user }) => {
+const AccountUpdateEmail: FC<AccountUpdateEmailProperties> = ({ user }) => {
 
 	const { supabase } = useSupabase();
 
@@ -36,14 +34,15 @@ const AccountUpdatePassword: FC<AccountUpdatePasswordProperties> = ({ user }) =>
 	const [ message, setMessage ] = useState<string | null>(null);
 	const [ isLoading, setIsLoading ] = useState<boolean>(false);
 
-	const { register, handleSubmit, reset, formState: { errors } } = useForm<UpdatePasswordFormValues>({
-		resolver: yupResolver(UpdatePasswordFormSchema),
+	const { register, handleSubmit, reset, formState: { errors } } = useForm<AccountUpdateEmailFormValues>({
+		resolver: yupResolver(AccountUpdateEmailFormSchema),
 		mode: 'onSubmit', 
 	});
 
-	const handleSubmitForm = async (values: UpdatePasswordFormValues) => {
+	const handleSubmitForm = async (values: AccountUpdateEmailFormValues) => {
 		setIsLoading(true);
 		setError(null);
+		setMessage(null);
 		try {
 			if (!user.email) {
 				setError('Your account must have a valid email to update your password.');
@@ -57,16 +56,13 @@ const AccountUpdatePassword: FC<AccountUpdatePasswordProperties> = ({ user }) =>
 				setError(signInError.message === 'Invalid login credentials' ? 'Invalid password.' : signInError.message);
 				return;
 			}
-			const { error: updateError } = await supabase.auth.updateUser({ password: values.newPassword });
+			const { error: updateError, data } = await supabase.auth.updateUser({ email: values.email });
 			if (updateError) {
 				setError(updateError.message);
 				return;
 			}
-			setMessage('Saved successfully.');
+			setMessage('Please check your the inbox of the new email address to validate the update.');
 			reset();
-			setTimeout(() => {
-				setMessage(null);
-			}, 3000);
 		} catch (error) {
 			console.error(error);
 			setError('An error occured.');
@@ -77,32 +73,32 @@ const AccountUpdatePassword: FC<AccountUpdatePasswordProperties> = ({ user }) =>
 
 	return (
 		<div>
-			<h2 className="text-xl text-blue-500 font-medium mb-4 flex gap-2 items-center"><FontAwesomeIcon icon={ faLockKeyhole } /> Update password</h2>
+			<h2 className="text-xl text-blue-500 font-medium mb-4 flex gap-2 items-center"><FontAwesomeIcon icon={ faAt } />Update email address</h2>
 			<form
 				className="drop-shadow bg-white p-6 rounded-md"
 				onSubmit={ handleSubmit(handleSubmitForm) }
 			>
 				<div className="w-1/2">
 					<Input
+						defaultValue={ user.email }
+						label="Current email address"
+						type="email"
+						disabled
+					/>
+				</div>
+				<div className="w-1/2">
+					<Input
+						error={ errors.email?.message }
+						label="New email address"
+						register={ register('email') }
+						type="email"
+					/>
+				</div>
+				<div className="w-1/2">
+					<Input
 						error={ errors.password?.message }
 						label="Current password"
 						register={ register('password') }
-						type="password"
-					/>
-				</div>
-				<div className="w-1/2">
-					<Input
-						error={ errors.newPassword?.message }
-						label="New password"
-						register={ register('newPassword') }
-						type="password"
-					/>
-				</div>
-				<div className="w-1/2">
-					<Input
-						error={ errors.newPasswordConfirm?.message }
-						label="Confirm new password"
-						register={ register('newPasswordConfirm') }
 						type="password"
 					/>
 				</div>
@@ -120,4 +116,4 @@ const AccountUpdatePassword: FC<AccountUpdatePasswordProperties> = ({ user }) =>
 	);
 };
 
-export default AccountUpdatePassword;
+export default AccountUpdateEmail;

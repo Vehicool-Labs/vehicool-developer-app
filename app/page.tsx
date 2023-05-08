@@ -1,6 +1,6 @@
 'use client';
 
-import { faSpinnerThird, faTire } from '@fortawesome/pro-duotone-svg-icons';
+import { faTire } from '@fortawesome/pro-duotone-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

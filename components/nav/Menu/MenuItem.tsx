@@ -15,7 +15,7 @@ type MenuItemLinkProperties = MenuItemProperties & {
 const MenuItem = ({ className = '', key, path, title, icon, ...rest }: MenuItemLinkProperties) => {
 	return (
 		<Link
-			className={ `flex gap-2 px-4 py-2 w-full rounded-md  hover:text-gray-900 hover:bg-blue-300 ${ className }` }
+			className={ `flex gap-2 px-4 py-2 w-full items-center rounded-md hover:text-gray-900 hover:bg-blue-300 cursor-pointer ${ className }` }
 			href={ path }
 			{ ...rest }
 		>
