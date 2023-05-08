@@ -1,5 +1,7 @@
 'use client';
 
+import { faSignIn } from '@fortawesome/pro-duotone-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -128,11 +130,12 @@ const SignupPage = () => {
 					<Button.Primary
 						type="submit"
 					>
+						<FontAwesomeIcon icon={ faSignIn } />
 						Sign up
 					</Button.Primary>
 					<Link
 						className="text-blue-500 hover:text-blue-600 cursor-pointer"
-						href="/auth/signup"
+						href="/auth/signin"
 					>Already signed up ? Sign in
 					</Link>
 				</div>
