@@ -34,7 +34,9 @@ const SignupPage = () => {
 	const router = useRouter();
 	const { supabase } = useSupabase();
 
-	const [ error, setError ] = useState<string | null>();
+	const [ error, setError ] = useState<string | null>(null);
+	const [ message, setMessage ] = useState<string | null>(null);
+	const [ isLoading, setIsLoading ] = useState<boolean>(false);
 
 	const { register, handleSubmit, watch, formState: { errors } } = useForm<SignupFormValues>({
 		resolver: yupResolver(SignupFormSchema),
@@ -43,8 +45,10 @@ const SignupPage = () => {
 
 	const handleSubmitSignupForm = async (values: SignupFormValues) => {
 		try {
+			setMessage(null);
 			setError(null);
-			const { data, error }= await supabase.auth.signUp({
+			setIsLoading(true);
+			const { data, error } = await supabase.auth.signUp({
 				email: values.email,
 				password: values.password,
 				options: {
@@ -56,13 +60,20 @@ const SignupPage = () => {
 				},
 			});
 			if (error) {
+				console.error(error);
 				setError(error.message);
 				return;
+			} else if (data.user?.identities?.length === 0) {
+				setError('User already registered.');
+			} else {
+				setMessage('Success! Please check your inbox.');
 			}
-			router.push('/');
+			// router.push('/');
 		} catch (error) {
 			console.error(error);
 			setError('An error occured.');
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -111,7 +122,9 @@ const SignupPage = () => {
 					type="password"
 				/>
 				<div className="flex flex-col gap-4 items-center">
+					{ isLoading ? <p className="text-blue-500 font-medium">Loading...</p> : null }
 					{ error ? <p className="text-red-500 font-medium">{ error }</p> : null }
+					{ message ? <p className="text-green-500 font-medium">{ message }</p> : null }
 					<Button.Primary
 						type="submit"
 					>
