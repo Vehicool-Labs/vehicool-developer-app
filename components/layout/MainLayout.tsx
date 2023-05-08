@@ -51,6 +51,7 @@ const MainLayout = ({ children }: {
 						brand={ {
 							title: 'Vehicool',
 							href: '/',
+							tag: 'For developers.',
 						} }
 					>
 						<Menu
