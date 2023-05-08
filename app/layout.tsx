@@ -1,6 +1,8 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
 
+import MainLayout from '@/components/layout/MainLayout';
+
 import SupabaseProvider from './supabase-provider';
 
 const inter = Inter({ subsets: [ 'latin' ] });
@@ -22,7 +24,11 @@ const RootLayout = ({ children }: {
 				className={ `${ inter.className } bg-gray-50` }
 				style={ { height: '100%' } }
 			>
-				<SupabaseProvider>{ children }</SupabaseProvider>
+				<SupabaseProvider>
+					<MainLayout>
+						{ children }
+					</MainLayout>
+				</SupabaseProvider>
 			</body>
 		</html>
 	);
