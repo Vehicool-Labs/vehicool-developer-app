@@ -1,5 +1,7 @@
 'use client';
 
+import { faSignOut, faTachometerAlt, faUser } from '@fortawesome/pro-duotone-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Session } from '@supabase/supabase-js';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -60,11 +62,13 @@ const MainLayout = ({ children }: {
 									title: 'Dashboard',
 									path: '/dashboard',
 									key: 'dashboard',
+									icon: <FontAwesomeIcon icon={ faTachometerAlt } />,
 								},
 								{
 									title: 'Account',
 									path: '/account',
 									key: 'account',
+									icon: <FontAwesomeIcon icon={ faUser } />,
 								},
 							] }
 							title="Navigation"
@@ -73,6 +77,7 @@ const MainLayout = ({ children }: {
 							className="w-full mt-auto"
 							onClick={ handleSignout }
 						>
+							<FontAwesomeIcon icon={ faSignOut } />
 							Sign out
 						</Button.Danger>
 					</Sidebar>

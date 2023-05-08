@@ -1,5 +1,7 @@
 'use client';
 
+import { faSave, faCircleInfo } from '@fortawesome/pro-duotone-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { User } from '@supabase/supabase-js';
 import { FC, useState } from 'react';
@@ -34,7 +36,7 @@ const AccountPersonalInfos: FC<AccountPersonalInfosProperties> = ({ user }) => {
 	const [ message, setMessage ] = useState<string | null>(null);
 	const [ isLoading, setIsLoading ] = useState<boolean>(false);
 
-	const { register, handleSubmit, watch, formState: { errors } } = useForm<AccountPersonalInfosFormValues>({
+	const { register, handleSubmit, formState: { errors } } = useForm<AccountPersonalInfosFormValues>({
 		defaultValues: {
 			firstname: user.user_metadata.firstname || '',
 			lastname: user.user_metadata.lastname || '',
@@ -72,7 +74,7 @@ const AccountPersonalInfos: FC<AccountPersonalInfosProperties> = ({ user }) => {
 
 	return (
 		<div>
-			<h2 className="text-xl text-blue-500 font-medium mb-4">Personal informations</h2>
+			<h2 className="text-xl text-blue-500 font-medium mb-4 flex gap-2 items-center"><FontAwesomeIcon icon={ faCircleInfo } />Personal informations</h2>
 			<form
 				className="drop-shadow bg-white p-6 rounded-md"
 				onSubmit={ handleSubmit(handleSubmitForm) }
@@ -102,6 +104,7 @@ const AccountPersonalInfos: FC<AccountPersonalInfosProperties> = ({ user }) => {
 				</div>
 				<div className="flex gap-4 items-center">
 					<Button.Primary disabled={ isLoading }>
+						<FontAwesomeIcon icon={ faSave } />
 						Save
 					</Button.Primary>
 					{ error ? <p className="text-red-500 font-medium">{ error }</p> : null }
