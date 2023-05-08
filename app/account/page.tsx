@@ -4,6 +4,7 @@ import { User } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
 import AccountPersonalInfos from '@/features/account/AccountPersonalInfos';
+import AccountUpdatePassword from '@/features/account/AccountUpdatePassword';
 
 import { useSupabase } from '../supabase-provider';
 
@@ -26,7 +27,10 @@ const AccountPage = () => {
 	return (
 		<div>
 			<h1 className="text-2xl text-blue-500 font-bold mb-8">Account</h1>
-			{ user ? <AccountPersonalInfos user={ user } /> : null }
+			<div className="flex flex-col gap-8">
+				{ user ? <AccountPersonalInfos user={ user } /> : null }
+				{ user ? <AccountUpdatePassword user={ user } /> : null }
+			</div>
 		</div>
 	);
 };

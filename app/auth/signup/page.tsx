@@ -25,8 +25,8 @@ const SignupFormSchema = Yup.object({
 	lastname: Yup.string().required('Required.'),
 	company: Yup.string(),
 	email: Yup.string().required('Required.').email('Please set a valid email address.'),
-	password: Yup.string().required('Required.').min(12, 'Should contain at least 12 characters.'),
-	passwordConfirm: Yup.string().required('Required').oneOf([ Yup.ref('password') ], 'Passwords must match'),
+	password: Yup.string().required('Required.').min(8, 'Should contain at least 8 characters.'),
+	passwordConfirm: Yup.string().required('Required').oneOf([ Yup.ref('password') ], 'Passwords must match.'),
 }).required();
 
 const SignupPage = () => {
