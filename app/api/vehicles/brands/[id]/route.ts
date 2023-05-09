@@ -2,7 +2,9 @@ import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { headers, cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-export const GET = async (request: Request) => {
+export const GET = async (request: Request, { params }: {
+    params: { id: string };
+  }) => {
 	const { searchParams } = new URL(request.url);
 	const apiKey = searchParams.get('api_key');
 	if (!apiKey) {
@@ -23,9 +25,13 @@ export const GET = async (request: Request) => {
 		return NextResponse.json({ error: 'Please provide a valid API Key' }, { status: 401 });
 	}
 	await supabase.from('api_keys').update({ global_requests_count: apiKeyObj.global_requests_count + 1 }).eq('id', apiKeyObj.id);
-	const { data: vehicleBrands, error } = await supabase.from('vehicle_brands').select('*');
+	const { data: vehicleBrands, error } = await supabase.from('vehicle_brands').select().eq('id', +params.id);
 	if (error) {
 		return NextResponse.json({ error: error.message }, { status: 500 });
 	}
-	return NextResponse.json(vehicleBrands);
+	const vehicleBrand = vehicleBrands ? vehicleBrands[ 0 ] : null;
+	if (!vehicleBrand) {
+		return NextResponse.json({ error: `Brand not found with id ${ params.id }` }, { status: 404 });
+	}
+	return NextResponse.json(vehicleBrand);
 };
