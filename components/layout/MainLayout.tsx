@@ -1,6 +1,6 @@
 'use client';
 
-import { faSignOut, faTachometerAlt, faUser } from '@fortawesome/pro-duotone-svg-icons';
+import { faKey, faSignOut, faTachometerAlt, faUser } from '@fortawesome/pro-duotone-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Session } from '@supabase/supabase-js';
 import { usePathname, useRouter } from 'next/navigation';
@@ -23,14 +23,18 @@ const MainLayout = ({ children }: {
 	const [ pathElement1 ] = pathname.split('/').filter(element => element);
 
 	useEffect(() => {
-		supabase.auth.getSession()
-			.then(({ data, error }) => {
-				if (error || !data.session) {
-					console.error(error);
-					setSession(null);
-				}
-				setSession(data.session);
-			});
+		supabase.auth.onAuthStateChange((state, session) => {
+			if (state === 'SIGNED_OUT') {
+				router.push('/');
+				return;
+			}
+			if (!session) {
+				supabase.auth.signOut();
+				router.push('/');
+				return;
+			}
+			setSession(session);
+		});
 	}, [ supabase ]);
 
 	const handleSignout = async () => {
@@ -69,6 +73,12 @@ const MainLayout = ({ children }: {
 									path: '/account',
 									key: 'account',
 									icon: <FontAwesomeIcon icon={ faUser } />,
+								},
+								{
+									title: 'API Key',
+									path: '/api-key',
+									key: 'api-key',
+									icon: <FontAwesomeIcon icon={ faKey } />,
 								},
 							] }
 							title="Navigation"

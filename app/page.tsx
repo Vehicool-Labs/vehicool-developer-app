@@ -16,12 +16,17 @@ const HomePage = () => {
 	useEffect(() => {
 		supabase.auth.getSession()
 			.then(({ data, error }) => {
-				console.error(error);
 				if (error || !data.session) {
+					console.error('ROOT ERROR >>>', error);
 					router.push('/auth/signin');
 					return;
 				}
-				router.push('/dashboard');
+				supabase.auth.refreshSession()
+					.finally(() => {
+						router.push('/dashboard');
+					});
+			}).catch(error => {
+				console.error('ROOT ERROR', error);
 			});
 	}, [ supabase ]);
 
