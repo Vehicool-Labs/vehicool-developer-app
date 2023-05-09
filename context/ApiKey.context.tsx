@@ -9,6 +9,7 @@ export type ApiKey = {
     created_at: string | null;
     id: number;
     user_id: string;
+	global_requests_count: number,
 };
 
 type ApiKeyContextType = {
