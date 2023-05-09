@@ -2,6 +2,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 
 import MainLayout from '@/components/layout/MainLayout';
+import ApiKeyContextProvider from '@/context/ApiKey.context';
 
 import SupabaseProvider from './supabase-provider';
 
@@ -25,9 +26,11 @@ const RootLayout = ({ children }: {
 				style={ { height: '100%' } }
 			>
 				<SupabaseProvider>
-					<MainLayout>
-						{ children }
-					</MainLayout>
+					<ApiKeyContextProvider>
+						<MainLayout>
+							{ children }
+						</MainLayout>
+					</ApiKeyContextProvider>
 				</SupabaseProvider>
 			</body>
 		</html>

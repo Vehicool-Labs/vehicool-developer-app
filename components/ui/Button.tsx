@@ -19,14 +19,14 @@ const Button: FC<ButtonProperties> & ButtonVariants = ({ className = '', ...rest
 
 const ButtonPrimary: FC<ButtonProperties> = ({ className = '', ...rest }: ButtonProperties) => (
 	<Button
-		className={ `bg-blue-500 hover:bg-blue-600 text-white ${ className }` }
+		className={ `bg-blue-500 hover:bg-blue-600 text-white disabled:hover:bg-blue-500 disabled:opacity-60 disabled:cursor-default ${ className }` }
 		{ ...rest }
 	/>
 );
 
 const ButtonDanger: FC<ButtonProperties> = ({ className = '', ...rest }: ButtonProperties) => (
 	<Button
-		className={ `bg-red-500 hover:bg-red-600 text-white ${ className }` }
+		className={ `bg-red-500 hover:bg-red-600 text-white disabled:hover:bg-red-500 disabled:opacity-60 disabled:cursor-default ${ className }` }
 		{ ...rest }
 	/>
 );
