@@ -1,37 +1,43 @@
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { headers, cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+
+import createSupabaseClient from '@/lib/supabase/route-handle-client';
+import { getApiKey } from '@/services/api-key';
+import { buildError, sendError } from '@/utils/errors.utils';
 
 export const GET = async (request: Request, { params }: {
     params: { id: string };
   }) => {
-	const { searchParams } = new URL(request.url);
-	const apiKey = searchParams.get('api_key');
-	if (!apiKey) {
-		return NextResponse.json({ error: 'Please provide a valid API Key' }, { status: 401 });
-	}
-	const supabase = createRouteHandlerSupabaseClient({
-		supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-		supabaseKey: process.env.SUPABASE_SERVICE_KEY,
+
+	const supabase = createSupabaseClient({
 		headers,
-		cookies,
-	  });
-	const { data: apiKeyData, error: apiKeyError } = await supabase.from('api_keys').select().eq('api_key', apiKey);
-	if (apiKeyError) {
-		return NextResponse.json({ error: apiKeyError.message }, { status: 500 });
+		cookies, 
+	});
+
+	try {
+		const { searchParams } = new URL(request.url);
+		const apiKey = searchParams.get('api_key');
+
+		if (!apiKey) throw buildError({
+			message: 'Please provide a valid API Key.',
+			status: 401, 
+		});
+
+		const apiKeyData = await getApiKey(supabase, apiKey);
+		await supabase.from('api_keys').update({ global_requests_count: apiKeyData.global_requests_count + 1 }).eq('id', apiKeyData.id);
+
+		const { data: vehicleBrands, error } = await supabase.from('vehicle_brands').select().eq('id', +params.id);
+
+		if (error) throw error;
+
+		const vehicleBrand = vehicleBrands ? vehicleBrands[ 0 ] : null;
+		if (!vehicleBrand) throw {
+			message: `Brand not found with id ${ params.id }`,
+			status: 404,
+		};
+
+		return NextResponse.json(vehicleBrand);
+	} catch (error) {
+		return sendError(error);
 	}
-	const apiKeyObj = apiKeyData ? apiKeyData[ 0 ] : null;
-	if (!apiKeyObj || !apiKeyObj.is_active) {
-		return NextResponse.json({ error: 'Please provide a valid API Key' }, { status: 401 });
-	}
-	await supabase.from('api_keys').update({ global_requests_count: apiKeyObj.global_requests_count + 1 }).eq('id', apiKeyObj.id);
-	const { data: vehicleBrands, error } = await supabase.from('vehicle_brands').select().eq('id', +params.id);
-	if (error) {
-		return NextResponse.json({ error: error.message }, { status: 500 });
-	}
-	const vehicleBrand = vehicleBrands ? vehicleBrands[ 0 ] : null;
-	if (!vehicleBrand) {
-		return NextResponse.json({ error: `Brand not found with id ${ params.id }` }, { status: 404 });
-	}
-	return NextResponse.json(vehicleBrand);
 };
